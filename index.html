@@ -3,78 +3,46 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EGG FINDER</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EGG FINDER RADAR</title>
 <style>
-body {
-  background:#090d18;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-  margin:0;
-}
-header {
-  background:#151e35;
-  padding:25px;
-  border-bottom:2px solid #38d9ff;
-}
-h1 {color:#38d9ff}
-.panel {
-  background:#151e35;
-  margin:20px auto;
-  padding:20px;
-  border-radius:15px;
-  max-width:420px;
-}
-input {
-  padding:14px;
-  width:85%;
-  border-radius:8px;
-  border:0;
-}
-button {
-  background:#38d9ff;
-  color:#090d18;
-  border:0;
-  padding:14px 22px;
-  border-radius:9px;
-  font-weight:bold;
-  margin:12px;
-}
-#resultado {color:#38d9ff}
+*{box-sizing:border-box}
+body{margin:0;background:#080d19;color:white;font-family:Arial;text-align:center}
+header{background:#111d35;padding:22px;border-bottom:2px solid #27dfff}
+h1{color:#27dfff}
+.panel{background:#14213b;margin:18px auto;padding:20px;border-radius:15px;max-width:500px}
+button{background:#27dfff;color:#07101e;border:0;padding:13px 20px;border-radius:9px;font-weight:bold;margin:8px}
+.item{background:#202f4b;margin:10px;padding:14px;border-radius:10px}
+.status{color:#27dfff}
 </style>
 </head>
 <body>
 <header>
 <h1>🥚 EGG FINDER</h1>
-<p>Buscador de huevos grandes</p>
+<p>RADAR DE HUEVOS GRANDES</p>
 </header>
-
 <div class="panel">
-<h2>🔎 Buscar huevos</h2>
-<input id="huevo" placeholder="Nombre del huevo">
-<br>
-<button onclick="buscar()">BUSCAR</button>
-<p id="resultado">Esperando búsqueda...</p>
+<h2>📡 RADAR AUTOMÁTICO</h2>
+<p class="status" id="estado">RADAR SIN CONECTAR</p>
+<button onclick="buscar()">ACTUALIZAR RADAR</button>
+<div id="huevos">
+<div class="item">Esperando datos reales de huevos...</div>
 </div>
-
+</div>
 <div class="panel">
-<h2>🌎 Servidores</h2>
+<h2>🌎 SERVIDORES</h2>
 <button onclick="servidores()">BUSCAR SERVIDORES</button>
-<p id="servers">Sin consultar</p>
+<div id="servers">Todavía no hay servidores cargados.</div>
 </div>
-
 <script>
 function buscar(){
-let nombre=document.getElementById("huevo").value.trim();
-document.getElementById("resultado").textContent=
-nombre ? "Búsqueda preparada para: "+nombre+
-". Falta conectar los datos reales." :
-"Escribe el nombre de un huevo.";
+document.getElementById("estado").textContent="ESPERANDO FUENTE DE DATOS";
+document.getElementById("huevos").innerHTML=
+'<div class="item">El radar necesita una conexión de datos del juego.</div>';
 }
 function servidores(){
 document.getElementById("servers").textContent=
-"Conexión de servidores pendiente.";
+"Falta conectar la consulta pública de servidores de Roblox.";
 }
 </script>
 </body>
