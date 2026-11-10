@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EGG FINDER</title>
+<style>
+body {
+  background:#090d18;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  margin:0;
+}
+header {
+  background:#151e35;
+  padding:25px;
+  border-bottom:2px solid #38d9ff;
+}
+h1 {color:#38d9ff}
+.panel {
+  background:#151e35;
+  margin:20px auto;
+  padding:20px;
+  border-radius:15px;
+  max-width:420px;
+}
+input {
+  padding:14px;
+  width:85%;
+  border-radius:8px;
+  border:0;
+}
+button {
+  background:#38d9ff;
+  color:#090d18;
+  border:0;
+  padding:14px 22px;
+  border-radius:9px;
+  font-weight:bold;
+  margin:12px;
+}
+#resultado {color:#38d9ff}
+</style>
+</head>
+<body>
+<header>
+<h1>🥚 EGG FINDER</h1>
+<p>Buscador de huevos grandes</p>
+</header>
+
+<div class="panel">
+<h2>🔎 Buscar huevos</h2>
+<input id="huevo" placeholder="Nombre del huevo">
+<br>
+<button onclick="buscar()">BUSCAR</button>
+<p id="resultado">Esperando búsqueda...</p>
+</div>
+
+<div class="panel">
+<h2>🌎 Servidores</h2>
+<button onclick="servidores()">BUSCAR SERVIDORES</button>
+<p id="servers">Sin consultar</p>
+</div>
+
+<script>
+function buscar(){
+let nombre=document.getElementById("huevo").value.trim();
+document.getElementById("resultado").textContent=
+nombre ? "Búsqueda preparada para: "+nombre+
+". Falta conectar los datos reales." :
+"Escribe el nombre de un huevo.";
+}
+function servidores(){
+document.getElementById("servers").textContent=
+"Conexión de servidores pendiente.";
+}
+</script>
+</body>
+</html>
