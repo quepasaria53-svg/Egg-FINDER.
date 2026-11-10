@@ -3,17 +3,17 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EGG FINDER RADAR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EGG FINDER</title>
 <style>
-*{box-sizing:border-box}
 body{margin:0;background:#080d19;color:white;font-family:Arial;text-align:center}
-header{background:#111d35;padding:22px;border-bottom:2px solid #27dfff}
-h1{color:#27dfff}
-.panel{background:#14213b;margin:18px auto;padding:20px;border-radius:15px;max-width:500px}
-button{background:#27dfff;color:#07101e;border:0;padding:13px 20px;border-radius:9px;font-weight:bold;margin:8px}
-.item{background:#202f4b;margin:10px;padding:14px;border-radius:10px}
-.status{color:#27dfff}
+header{background:#14213b;padding:20px;border-bottom:2px solid #25ddff}
+h1{color:#25ddff}
+.panel{background:#14213b;margin:18px auto;padding:18px;border-radius:15px;max-width:520px}
+button{background:#25ddff;border:0;padding:13px 20px;border-radius:9px;font-weight:bold}
+.server{background:#243653;padding:14px;margin:12px 0;border-radius:10px}
+a{color:#25ddff}
+#estado{color:#25ddff}
 </style>
 </head>
 <body>
@@ -21,28 +21,90 @@ button{background:#27dfff;color:#07101e;border:0;padding:13px 20px;border-radius
 <h1>🥚 EGG FINDER</h1>
 <p>RADAR DE HUEVOS GRANDES</p>
 </header>
+
 <div class="panel">
-<h2>📡 RADAR AUTOMÁTICO</h2>
-<p class="status" id="estado">RADAR SIN CONECTAR</p>
-<button onclick="buscar()">ACTUALIZAR RADAR</button>
-<div id="huevos">
-<div class="item">Esperando datos reales de huevos...</div>
+<h2>📡 RADAR</h2>
+<p id="radar">Esperando datos de huevos...</p>
+<p>La información de huevos dentro de cada servidor todavía no está disponible.</p>
 </div>
-</div>
+
 <div class="panel">
-<h2>🌎 SERVIDORES</h2>
-<button onclick="servidores()">BUSCAR SERVIDORES</button>
-<div id="servers">Todavía no hay servidores cargados.</div>
+<h2>🌎 SERVIDORES PÚBLICOS</h2>
+<p id="estado">Listo para buscar</p>
+<button id="btn" onclick="buscarServidores()">BUSCAR SERVIDORES</button>
+<div id="servers"></div>
 </div>
+
 <script>
-function buscar(){
-document.getElementById("estado").textContent="ESPERANDO FUENTE DE DATOS";
-document.getElementById("huevos").innerHTML=
-'<div class="item">El radar necesita una conexión de datos del juego.</div>';
-}
-function servidores(){
-document.getElementById("servers").textContent=
-"Falta conectar la consulta pública de servidores de Roblox.";
+const PLACE_ID = "107778070777162";
+let ultimaBusqueda = 0;
+
+async function buscarServidores(){
+ const ahora = Date.now();
+ if(ahora - ultimaBusqueda < 20000){
+  document.getElementById("estado").textContent =
+  "Espera unos segundos antes de actualizar.";
+  return;
+ }
+
+ ultimaBusqueda = ahora;
+ const btn = document.getElementById("btn");
+ const lista = document.getElementById("servers");
+ const estado = document.getElementById("estado");
+
+ btn.disabled = true;
+ estado.textContent = "Buscando servidores...";
+ lista.innerHTML = "";
+
+ try {
+  const url = "https://proxy.cors.dev/https://games.roblox.com/v1/games/"
+  + PLACE_ID + "/servers/Public?limit=10&sortOrder=Asc";
+
+  const respuesta = await fetch(url);
+
+  if(respuesta.status === 429){
+   throw new Error("Roblox está limitando las consultas. Espera un poco.");
+  }
+  if(!respuesta.ok) throw new Error("Error HTTP " + respuesta.status);
+
+  const datos = await respuesta.json();
+
+  if(!datos.data || datos.data.length === 0){
+   estado.textContent = "No se encontraron servidores.";
+   return;
+  }
+
+  estado.textContent = datos.data.length + " servidores encontrados.";
+
+  datos.data.forEach((s,i)=>{
+   const tarjeta = document.createElement("div");
+   tarjeta.className = "server";
+
+   const titulo = document.createElement("h3");
+   titulo.textContent = "Servidor " + (i+1);
+
+   const jugadores = document.createElement("p");
+   jugadores.textContent = "Jugadores: " + s.playing + "/" + s.maxPlayers;
+
+   const ping = document.createElement("p");
+   ping.textContent = "Ping: " + (s.ping ?? "No disponible");
+
+   const entrar = document.createElement("a");
+   entrar.textContent = "ENTRAR AL SERVIDOR";
+   entrar.href = "https://www.roblox.com/games/start?placeId="
+      + PLACE_ID + "&gameInstanceId=" + encodeURIComponent(s.id);
+   entrar.target = "_blank";
+   entrar.rel = "noopener";
+
+   tarjeta.append(titulo,jugadores,ping,entrar);
+   lista.appendChild(tarjeta);
+  });
+
+ } catch(error){
+  estado.textContent = error.message;
+ } finally {
+  btn.disabled = false;
+ }
 }
 </script>
 </body>
